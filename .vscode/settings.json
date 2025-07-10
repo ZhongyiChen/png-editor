@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "stdint.h": "c",
+    "png_decoder.h": "c",
+    "commdlg.h": "c",
+    "windows.h": "c"
+  }
+}
