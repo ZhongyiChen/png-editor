@@ -50,7 +50,7 @@ typedef struct {
     uint8_t color_type;             // 颜色类型（如灰度、RGB、调色板等），与 bit_depth 共同决定像素格式。
     uint8_t compression_method;     // 压缩方法（PNG 标准中固定为 0，表示 DEFLATE 压缩）
     uint8_t filter_method;          // 滤波方法（PNG 标准中固定为 0，表示自适应滤波）
-    uint8_t interlace_method;       // 隔行扫描方式（0：非隔行；1：Adam7 隔行）
+    uint8_t interlace_method;       // 隔行扫描方法（0：非隔行；1：Adam7 隔行）
 } PNG_IHDR;
 
 typedef struct {
@@ -61,9 +61,9 @@ typedef struct {
 } PNG_Chunk;
 
 typedef struct {
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
+    uint8_t red;                    // 红色分量
+    uint8_t green;                  // 绿色分量
+    uint8_t blue;                   // 蓝色分量
 } PNG_PaletteEntry;
 
 typedef struct {
@@ -81,7 +81,7 @@ int png_read_chunk(FILE* file, PNG_Chunk* chunk);
 void png_free_chunk(PNG_Chunk* chunk);
 int png_parse_ihdr(PNG_Chunk* chunk, PNG_IHDR* ihdr);
 int png_parse_plte(PNG_Chunk* chunk, PNG_PaletteEntry** palette, uint32_t* palette_size);
-int png_parse_trns(PNG_Chunk* chunk, uint8_t** transparency, uint32_t* transparency_size);
+int png_parse_trns(PNG_Chunk* chunk, uint8_t color_type, uint8_t** transparency, uint32_t* transparency_size);
 int png_process_idat(PNG_Chunk* chunk, uint8_t** image_data, uint32_t* image_data_size);
 int png_decompress_data(uint8_t* compressed, uint32_t compressed_size, uint8_t** decompressed, uint32_t* decompressed_size);
 int png_apply_filters(uint8_t* image_data, uint32_t image_data_size, PNG_IHDR* header);

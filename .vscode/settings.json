@@ -3,6 +3,7 @@
     "stdint.h": "c",
     "png_decoder.h": "c",
     "commdlg.h": "c",
-    "windows.h": "c"
+    "windows.h": "c",
+    "stdio.h": "c"
   }
 }
