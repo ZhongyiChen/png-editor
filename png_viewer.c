@@ -233,7 +233,7 @@ void DisplayImage(HWND hwnd, const char* filename) {
     BITMAPINFO bmi = {0};
     bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     bmi.bmiHeader.biWidth = pngImage.header.width;
-    bmi.bmiHeader.biHeight = -((uint32_t)pngImage.header.height);   // 负高度表示从上到下的位图（Windows 默认是从下到上）
+    bmi.bmiHeader.biHeight = -(pngImage.header.height);   // 负高度表示从上到下的位图（Windows 默认是从下到上）
     bmi.bmiHeader.biPlanes = 1;
     bmi.bmiHeader.biBitCount = 32;                                  // 32 位 RGBA 格式
     bmi.bmiHeader.biCompression = BI_RGB;                           // 未压缩格式

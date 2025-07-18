@@ -425,7 +425,7 @@ int png_decompress_data(uint8_t* compressed, uint32_t compressed_size, uint8_t**
     if (final_buffer) {
         *decompressed = final_buffer;
     }
-    
+
     return ret == Z_STREAM_END ? 1 : 0;
 }
 
@@ -559,28 +559,16 @@ int png_apply_filters(uint8_t* image_data, uint32_t image_data_size, PNG_IHDR* h
 		}
 
 		// 复制处理后的行到输出
-		memcpy(output_ptr, current_line, bytes_per_line);
+		memcpy(output_ptr, current_line, bytes_per_line + 1);
 		output_ptr += bytes_per_line;
 
 		// 将当前行作为前一行，以供下一行使用
-		memcpy(prev_line, current_line, bytes_per_line);
+		memcpy(prev_line, current_line, bytes_per_line + 1);
 	}
 
 	free(prev_line);
 	free(current_line);
 
-	// 调整数据大小（移除过滤类型字节），将图像数据紧凑排列
-	// memmove(image_data, image_data + header->height, bytes_per_line * header->height);
-	uint8_t* src = image_data;
-	uint8_t* dest = image_data;
-
-	for (uint32_t y = 0; y < header->height; y++) {
-		src++;  // 跳过当前行的 filter_type
-		memmove(dest, src, bytes_per_line);
-		src += bytes_per_line;
-		dest += bytes_per_line;
-	}
-	
 	return 1;
 }
 
@@ -657,10 +645,9 @@ int png_convert_to_rgba(PNG_Image* image, uint8_t** output, uint32_t* output_siz
 	for (uint32_t y = 0; y < height; y++) {
 		uint8_t* src_row = src + y * src_row_bytes;			// 计算当前处理行的起始位置
 		uint8_t* dst_row = dst + y * width * 4;				// 目标缓冲区对应位置
+		uint8_t r = 0, g = 0, b = 0, a = 255;
 
 		for (uint32_t x = 0; x < width; x++) {
-			uint8_t r = 0, g = 0, b = 0, a = 255;
-
 			switch (color_type) {
 				case PNG_COLOR_TYPE_GRAY:
 					if (bit_depth == 16) {
@@ -804,9 +791,10 @@ int png_convert_to_rgba(PNG_Image* image, uint8_t** output, uint32_t* output_siz
 				}
 			}
 
-			dst_row[x * 4] = r;
+			// DIB（BI_RGB）默认期望 B, G, R, A 顺序
+			dst_row[x * 4] = b;
 			dst_row[x * 4 + 1] = g;
-			dst_row[x * 4 + 2] = b;
+			dst_row[x * 4 + 2] = r;
 			dst_row[x * 4 + 3] = a;
 		}
 	}
